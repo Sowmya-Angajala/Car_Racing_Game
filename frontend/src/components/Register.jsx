@@ -9,32 +9,38 @@ const Register = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (!username || !email || !password) {
       alert("Please fill all fields");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (
-      users.some(
-        (u) => u.email.toLowerCase().trim() === email.toLowerCase().trim()
-      )
-    ) {
-      alert("Email already registered");
-      return;
-    }
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: username, email, password }),
+      });
 
-    users.push({ username, email, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Registration successful! Please login.");
-    navigate("/login");
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Registration failed");
+        return;
+      }
+
+      localStorage.setItem("loggedInUser", data.user.email);
+      alert("Registration successful! Redirecting to Home...");
+      navigate("/home");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
+    }
   };
 
   return (
     <div className="page-container register">
-      {/* Video background */}
       <video
         autoPlay
         muted
@@ -48,14 +54,11 @@ const Register = () => {
         />
       </video>
 
-      {/* Buttons & Form appear after video loaded */}
       {videoLoaded && (
         <>
           <div className="top-buttons">
             <button onClick={() => navigate("/login")}>Login</button>
-            <button className="active" onClick={() => navigate("/register")}>
-              Register
-            </button>
+            <button className="active" onClick={() => navigate("/register")}>Register</button>
           </div>
 
           <div className="form-container">
@@ -79,9 +82,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="register" type="submit">
-                Register
-              </button>
+              <button className="register" type="submit">Register</button>
             </form>
           </div>
         </>

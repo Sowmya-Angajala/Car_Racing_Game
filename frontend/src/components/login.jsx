@@ -8,22 +8,38 @@ const Login = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (u) => u.email.toLowerCase().trim() === email.toLowerCase().trim() && u.password === password
-    );
-    if (!user) return alert("Wrong email or password");
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
 
-    alert(`Welcome, ${user.username}`);
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-    navigate("/home");
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("loggedInUser", data.user.email);
+      alert(`Welcome, ${data.user.email}`);
+      navigate("/home");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
+    }
   };
 
   return (
     <div className="page-container login">
-      {/* Video background */}
       <video
         autoPlay
         muted
@@ -37,13 +53,10 @@ const Login = () => {
         />
       </video>
 
-      {/* Buttons & Form appear after video loaded */}
       {videoLoaded && (
         <>
           <div className="top-buttons">
-            <button className="active" onClick={() => navigate("/login")}>
-              Login
-            </button>
+            <button className="active" onClick={() => navigate("/login")}>Login</button>
             <button onClick={() => navigate("/register")}>Register</button>
           </div>
 
@@ -62,9 +75,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="login" type="submit">
-                Login
-              </button>
+              <button className="login" type="submit">Login</button>
             </form>
           </div>
         </>
