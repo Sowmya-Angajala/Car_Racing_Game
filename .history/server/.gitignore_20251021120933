@@ -1,0 +1,4 @@
+node_modules/
+MONGO_URI/
+PORT
+JWT_SECRET
