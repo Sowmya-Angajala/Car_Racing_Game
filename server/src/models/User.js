@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ProgressSchema = new mongoose.Schema({
   level: { type: Number, default: 0 },
@@ -14,4 +14,4 @@ const UserSchema = new mongoose.Schema({
   progress: { type: ProgressSchema, default: () => ({}) }
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);
