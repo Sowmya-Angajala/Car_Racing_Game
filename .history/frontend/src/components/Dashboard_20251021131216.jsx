@@ -1,8 +1,6 @@
 import Navbar from "./Navbar";
 import heroImage from "../assets/car-hero.png"; // same image used for both layers
-import { useNavigate } from "react-router-dom";
-export default function Dashboard() {
-    const navigate = useNavigate();
+import { useNavigate } from "react-router-dom";export default function Dashboard() {
   return (
     <div className="relative min-h-screen bg-gray-900 text-white overflow-hidden flex flex-col">
       {/* === Blurred Background Image === */}
@@ -32,7 +30,7 @@ export default function Dashboard() {
             Crazy Stunt Cars Multiplayer
           </h1>
 
-          <button onClick={() => navigate("/home")} className="px-12 py-4 bg-purple-600 rounded-full text-lg font-semibold hover:bg-purple-700 hover:scale-105 transition-all duration-300 shadow-lg">
+          <button onClick={() => navigate("/login")} className="px-12 py-4 bg-purple-600 rounded-full text-lg font-semibold hover:bg-purple-700 hover:scale-105 transition-all duration-300 shadow-lg">
             Play Now
           </button>
         </div>
